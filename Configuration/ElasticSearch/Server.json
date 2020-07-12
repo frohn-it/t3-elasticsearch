@@ -1,0 +1,9 @@
+{
+    "localhost": {
+        "host": "localhost",
+        "port": 9200,
+        "indexes": [
+            "pages"
+        ]
+    }
+}

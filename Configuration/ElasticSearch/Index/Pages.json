@@ -1,0 +1,12 @@
+{
+    "config": {
+        "indexer": [
+            "t3_elasticsearch_page_indexer"
+        ],
+        "shards": 4,
+        "replicas": 1
+    },
+    "analysis": {},
+    "filter": {},
+    "mapping": {}
+}

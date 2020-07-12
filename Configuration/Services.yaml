@@ -1,0 +1,22 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  BeFlo\T3Elasticsearch\:
+    resource: '../Classes/*'
+
+  cache.t3_elasticsearch_cache:
+    class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
+    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
+    arguments: ['t3_elasticsearch_cache']
+
+  BeFlo\T3Elasticsearch\Configuration\ConfigurationManager:
+    arguments:
+      $serverLoader: '@BeFlo\T3Elasticsearch\Server\ServerLoader'
+      $cache: '@cache.t3_elasticsearch_cache'
+
+  BeFlo\T3Elasticsearch\Backend\ToolbarItems\ElasticSearchToolbarItem:
+    arguments:
+      $configurationManager: '@BeFlo\T3Elasticsearch\Configuration\ConfigurationManager'

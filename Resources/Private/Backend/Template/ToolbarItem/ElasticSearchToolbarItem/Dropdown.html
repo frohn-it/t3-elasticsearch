@@ -1,0 +1,38 @@
+<f:if condition="{configuration.server -> f:count()} > 0">
+    <f:then>
+        <f:render section="server-list" arguments="{_all}" />
+    </f:then>
+    <f:else>
+        <div class="alert alert-info" role="alert">No server configuration found</div>
+    </f:else>
+</f:if>
+
+<f:section name="server-list">
+    <f:for each="{configuration.server}" as="server" iteration="iterator">
+        <h3 class="dropdown-headline">
+            Server: {server.identifier}
+            <f:if condition="{server.status.connected}">
+                <f:then><span class="label label-success pull-right">Connected</span></f:then>
+                <f:else><span class="label label-danger pull-right">Not connected</span></f:else>
+            </f:if>
+        </h3>
+        <hr />
+        <f:if condition="{server.status.connected}">
+            <div class="dropdown-table">
+                <f:render section="table-row" arguments="{title: 'Version', value: '{server.status.version}'}" />
+                <f:render section="table-row" arguments="{title: 'Indeces', value: '<span class=\"badge\">{server.status.data.indices -> f:count()}</span>'}" />
+                <f:render section="table-row" arguments="{title: 'Mapping', value: '<span class=\"label label-warning\">Dirty</span>'}" />
+            </div>
+        </f:if>
+        <f:if condition="{iterator.isLast} == 0">
+            <hr />
+        </f:if>
+    </f:for>
+</f:section>
+
+<f:section name="table-row">
+    <div class="dropdown-table-row">
+        <div class="dropdown-table-column dropdown-table-column-top dropdown-table-title">{title}</div>
+        <div class="dropdown-table-column dropdown-table-column-top dropdown-table-value"><f:format.raw>{value}</f:format.raw></div>
+    </div>
+</f:section>

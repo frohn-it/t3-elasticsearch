@@ -8,7 +8,9 @@
     "require": {
         "typo3/cms-core": "^10.2",
         "typo3/cms-rte-ckeditor": "^10.2",
-        "typo3/cms-fluid-styled-content": "^10.2"
+        "typo3/cms-fluid-styled-content": "^10.2",
+        "ruflin/elastica": "^7",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
