@@ -4,6 +4,9 @@
 namespace BeFlo\T3Elasticsearch\Indexer;
 
 
+use BeFlo\T3Elasticsearch\Domain\Dto\IndexData;
+use BeFlo\T3Elasticsearch\Index\Index;
+
 class PageIndexer implements RuntimeIndexerInterface
 {
     /**
@@ -14,8 +17,28 @@ class PageIndexer implements RuntimeIndexerInterface
     /**
      * @return string
      */
-    public function getIdentifier(): string
+    public static function getIdentifier(): string
     {
         return self::IDENTIFIER;
     }
+
+    /**
+     * @param IndexData|null $data
+     */
+    public function index(IndexData $data = null): void
+    {
+        // TODO: Implement index() method.
+    }
+
+    /**
+     * @param Index $index
+     *
+     * @return IndexerInterface
+     */
+    public function setIndex(Index $index): IndexerInterface
+    {
+
+        return $this;
+    }
+
 }

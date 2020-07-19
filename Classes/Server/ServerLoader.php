@@ -6,15 +6,19 @@ namespace BeFlo\T3Elasticsearch\Server;
 
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\ServerLoaderPreAddHookInterface;
+use BeFlo\T3Elasticsearch\Index\IndexLoader;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
+use BeFlo\T3Elasticsearch\Utility\JsonFileLoaderTrait;
 use SplObjectStorage;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class ServerLoader
+class ServerLoader implements SingletonInterface
 {
     use HookTrait;
+    use JsonFileLoaderTrait;
 
     /**
      * @var SplObjectStorage|Server[]
@@ -27,11 +31,19 @@ class ServerLoader
     protected $serverFilePathTemplate = 'EXT:%s/Configuration/ElasticSearch/Server.json';
 
     /**
-     * ServerLoader constructor.
+     * @var IndexLoader
      */
-    public function __construct()
+    protected $indexLoader;
+
+    /**
+     * ServerLoader constructor.
+     *
+     * @param IndexLoader $indexLoader
+     */
+    public function __construct(IndexLoader $indexLoader)
     {
         $this->server = new SplObjectStorage();
+        $this->indexLoader = $indexLoader;
         $this->initHooks(ServerLoader::class);
     }
 
@@ -64,29 +76,10 @@ class ServerLoader
     {
         $fullPath = GeneralUtility::getFileAbsFileName(sprintf($this->serverFilePathTemplate, $extensionName));
         if (file_exists($fullPath)) {
-            foreach ($this->loadServerConfigurationFile($fullPath) as $identifier => $serverConfiguration) {
+            foreach ($this->loadJsonFile($fullPath) as $identifier => $serverConfiguration) {
                 $this->parseServerConfiguration($identifier, $serverConfiguration);
             }
         }
-    }
-
-    /**
-     * @param string $filePath
-     *
-     * @return array
-     */
-    protected function loadServerConfigurationFile(string $filePath): array
-    {
-        $result = [];
-        $content = @file_get_contents($filePath);
-        if ($content !== false) {
-            $data = @json_decode($content, true);
-            if (is_array($data)) {
-                $result = $data;
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -99,7 +92,13 @@ class ServerLoader
             $server = new Server($identifier);
             $server->setHost($configuration['host']);
             $server->setPort($configuration['port']);
-            $server->setIndexes($configuration['indexes'] ?? []);
+            foreach ($configuration['indexes'] ?? [] as $indexIdentifier) {
+                $index = $this->indexLoader->getIndex($indexIdentifier);
+                if (!empty($index)) {
+                    $index->setServer($server);
+                    $server->addIndex($index);
+                }
+            }
             $parameter = [$server, $configuration, $this];
             $this->executeHook(ServerLoaderPreAddHookInterface::class, $parameter);
             if (!$this->server->contains($server)) {
@@ -120,7 +119,27 @@ class ServerLoader
             ->from('tx_t3elasticsearch_server')
             ->execute()->fetchAll();
         foreach ($rows ?? [] as $serverConfiguration) {
+            $serverConfiguration['indexes'] = $this->loadIndexIdentifierFromDatabaseForServer($serverConfiguration['indexes']);
             $this->parseServerConfiguration($serverConfiguration['identifier'], $serverConfiguration);
         }
+    }
+
+    /**
+     * @param string $uidList
+     *
+     * @return array
+     */
+    protected function loadIndexIdentifierFromDatabaseForServer(string $uidList): array
+    {
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_t3elasticsearch_index');
+        $qb = $connection->createQueryBuilder();
+        $rows = $qb->select('identifier')
+            ->from('tx_t3elasticsearch_index')
+            ->where(
+                $qb->expr()->in('uid', GeneralUtility::intExplode(',', $uidList, true))
+            )->execute()->fetchAll();
+
+        return $rows ?? [];
     }
 }
