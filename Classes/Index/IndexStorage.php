@@ -5,8 +5,9 @@ namespace BeFlo\T3Elasticsearch\Index;
 
 
 use BeFlo\T3Elasticsearch\Exceptions\UnexpectedObjectException;
+use SplObjectStorage;
 
-class IndexStorage extends \SplObjectStorage
+class IndexStorage extends SplObjectStorage
 {
     /**
      * Adds an object in the storage

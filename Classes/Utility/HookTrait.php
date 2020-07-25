@@ -22,7 +22,7 @@ trait HookTrait
      */
     protected function initHooks(string $baseClassName): void
     {
-        foreach($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$baseClassName] ?? [] as $className) {
+        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$baseClassName] ?? [] as $className) {
             $this->hookObjects[] = GeneralUtility::makeInstance($className);
         }
     }
@@ -35,9 +35,9 @@ trait HookTrait
     protected function executeHook(string $hookInterfaceName, array &$parameter)
     {
         $methods = get_class_methods($hookInterfaceName);
-        foreach($this->hookObjects as $hookObject) {
-            if($hookObject instanceof $hookInterfaceName) {
-                foreach($methods as $method) {
+        foreach ($this->hookObjects as $hookObject) {
+            if ($hookObject instanceof $hookInterfaceName) {
+                foreach ($methods as $method) {
                     $hookObject->{$method}(...$parameter);
                 }
             }

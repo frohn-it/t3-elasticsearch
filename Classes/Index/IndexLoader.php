@@ -7,7 +7,6 @@ namespace BeFlo\T3Elasticsearch\Index;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\IndexLoaderPreAddHookInterface;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
 use BeFlo\T3Elasticsearch\Utility\JsonFileLoaderTrait;
-use phpDocumentor\Reflection\DocBlockFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;

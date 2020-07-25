@@ -7,9 +7,9 @@ namespace BeFlo\T3Elasticsearch\Server;
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\ServerStatusPostProcessHookInterface;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
-use Elastica\Client;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Throwable;
 
 class ServerStatus implements LoggerAwareInterface
 {
@@ -41,7 +41,7 @@ class ServerStatus implements LoggerAwareInterface
      */
     public function get(): array
     {
-        if(empty($this->status)) {
+        if (empty($this->status)) {
             $this->init();
         }
 
@@ -55,7 +55,7 @@ class ServerStatus implements LoggerAwareInterface
     {
         $this->initHooks(ServerStatus::class);
         try {
-            $client = \BeFlo\T3Elasticsearch\Server\Client::get($this->server);
+            $client = Client::get($this->server);
             $status = $client->getStatus();
 
             $this->status = [
@@ -63,11 +63,11 @@ class ServerStatus implements LoggerAwareInterface
                 'version'   => $client->getVersion(),
                 'connected' => $client->hasConnection()
             ];
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->logger->info($exception->getMessage());
             $this->status = [
-                'data' => [],
-                'version' => '0.0.0',
+                'data'      => [],
+                'version'   => '0.0.0',
                 'connected' => false
             ];
         }

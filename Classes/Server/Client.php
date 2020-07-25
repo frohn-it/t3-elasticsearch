@@ -4,7 +4,6 @@
 namespace BeFlo\T3Elasticsearch\Server;
 
 
-
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\ClientPreConnectionHookInterface;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
@@ -61,7 +60,7 @@ class Client
      */
     public static function get(Server $server): Client
     {
-        if(empty(self::$clientStorage[$server->getIdentifier()])) {
+        if (empty(self::$clientStorage[$server->getIdentifier()])) {
             self::$clientStorage[$server->getIdentifier()] = new self($server);
         }
 
@@ -80,7 +79,7 @@ class Client
     public function __call($name, $arguments)
     {
         $result = null;
-        if(method_exists($this->elasticaClient, $name)) {
+        if (method_exists($this->elasticaClient, $name)) {
             $result = $this->elasticaClient->{$name}(...$arguments);
         }
 

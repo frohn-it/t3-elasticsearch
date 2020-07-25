@@ -8,8 +8,9 @@ use BeFlo\T3Elasticsearch\Hook\Interfaces\MappingPreJsonSerializeHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PostProcessMappingHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PreProcessMappingHookInterface;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
+use JsonSerializable;
 
-class Mapping implements \JsonSerializable
+class Mapping implements JsonSerializable
 {
     use HookTrait;
 

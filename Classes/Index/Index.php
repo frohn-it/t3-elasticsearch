@@ -60,13 +60,13 @@ class Index
     public function create(bool $reCreate = false)
     {
         $index = $this->getElasticaIndex();
-        if($index->exists() === false || $reCreate === true) {
+        if ($index->exists() === false || $reCreate === true) {
             $indexConfiguration = [
-                'number_of_shards' => $this->configuration['config']['shards'],
+                'number_of_shards'   => $this->configuration['config']['shards'],
                 'number_of_replicas' => $this->configuration['config']['replicas'],
-                'analysis' => [
+                'analysis'           => [
                     'analyzer' => $this->configuration['analyzer'],
-                    'filter' => $this->configuration['filter']
+                    'filter'   => $this->configuration['filter']
                 ]
             ];
             $parameter = [&$indexConfiguration, $this];
@@ -77,12 +77,32 @@ class Index
     }
 
     /**
+     * @return \Elastica\Index
+     */
+    protected function getElasticaIndex(): \Elastica\Index
+    {
+        if (empty($this->elasticaIndex)) {
+            $this->elasticaIndex = Client::get($this->server)->getIndex($this->identifier);
+        }
+
+        return $this->elasticaIndex;
+    }
+
+    /**
+     * @return Mapping
+     */
+    protected function getMapping(): Mapping
+    {
+        return GeneralUtility::makeInstance(Mapping::class, $this->configuration['mapping'] ?? []);
+    }
+
+    /**
      * Purge the index
      */
     public function purge(): void
     {
         $index = $this->getElasticaIndex();
-        if($index->exists()) {
+        if ($index->exists()) {
             $index->flush();
             // @ToDo Handle response
         }
@@ -95,7 +115,7 @@ class Index
     {
         $result = false;
         $index = $this->getElasticaIndex();
-        if($index->exists()) {
+        if ($index->exists()) {
             $this->getMapping()->get()->send($index);
             $result = true;
         }
@@ -183,25 +203,5 @@ class Index
         $this->server = $server;
 
         return $this;
-    }
-
-    /**
-     * @return Mapping
-     */
-    protected function getMapping(): Mapping
-    {
-        return GeneralUtility::makeInstance(Mapping::class, $this->configuration['mapping'] ?? []);
-    }
-
-    /**
-     * @return \Elastica\Index
-     */
-    protected function getElasticaIndex(): \Elastica\Index
-    {
-        if(empty($this->elasticaIndex)) {
-            $this->elasticaIndex = Client::get($this->server)->getIndex($this->identifier);
-        }
-
-        return $this->elasticaIndex;
     }
 }

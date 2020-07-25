@@ -11,8 +11,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ListCommand extends Command
@@ -49,7 +47,7 @@ class ListCommand extends Command
         $output->writeln(str_pad('', 40, '='));
         $output->writeln('');
         /** @var Server $server */
-        foreach($configuration['server'] ?? [] as $server) {
+        foreach ($configuration['server'] ?? [] as $server) {
             $this->printValue($output, 'Server', $server->getIdentifier());
             $this->printValue($output, 'Host', $server->getHost());
             $this->printValue($output, 'Port', $server->getPort());
@@ -59,10 +57,10 @@ class ListCommand extends Command
             $output->writeln('Indexes: ');
             $table = new Table($output);
             $table->setHeaders(['Name', 'Exist', 'Up2Date']);
-            foreach($server->getIndexes() as $index) {
+            foreach ($server->getIndexes() as $index) {
                 $exist = $index->exist();
                 $up2Date = '-';
-                if($exist === true) {
+                if ($exist === true) {
                     $up2Date = ($index->isMappingDirty() ? 'No' : 'Yes');
                 }
                 $table->addRow([$index->getIdentifier(), ($exist ? 'Yes' : 'No'), $up2Date]);

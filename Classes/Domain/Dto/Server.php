@@ -7,7 +7,6 @@ namespace BeFlo\T3Elasticsearch\Domain\Dto;
 use BeFlo\T3Elasticsearch\Index\Index;
 use BeFlo\T3Elasticsearch\Index\IndexStorage;
 use BeFlo\T3Elasticsearch\Server\ServerStatus;
-use Elastica\Status;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Server
@@ -94,7 +93,7 @@ class Server
      */
     public function getStatus(): array
     {
-        if(empty($this->status)) {
+        if (empty($this->status)) {
             $this->status = GeneralUtility::makeInstance(ServerStatus::class, $this);
         }
 
