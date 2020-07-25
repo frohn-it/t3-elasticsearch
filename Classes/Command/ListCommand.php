@@ -60,7 +60,12 @@ class ListCommand extends Command
             $table = new Table($output);
             $table->setHeaders(['Name', 'Exist', 'Up2Date']);
             foreach($server->getIndexes() as $index) {
-                $table->addRow([$index->getIdentifier(), ($index->exist() ? 'Yes' : 'No'), ($index->isMappingDirty() ? 'No' : 'Yes')]);
+                $exist = $index->exist();
+                $up2Date = '-';
+                if($exist === true) {
+                    $up2Date = ($index->isMappingDirty() ? 'No' : 'Yes');
+                }
+                $table->addRow([$index->getIdentifier(), ($exist ? 'Yes' : 'No'), $up2Date]);
             }
             $table->render();
         }
