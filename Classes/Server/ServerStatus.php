@@ -55,10 +55,7 @@ class ServerStatus implements LoggerAwareInterface
     {
         $this->initHooks(ServerStatus::class);
         try {
-            $client = new Client([
-                'host' => $this->server->getHost(),
-                'port' => $this->server->getPort()
-            ]);
+            $client = \BeFlo\T3Elasticsearch\Server\Client::get($this->server);
             $status = $client->getStatus();
 
             $this->status = [

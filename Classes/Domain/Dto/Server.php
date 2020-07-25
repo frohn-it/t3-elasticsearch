@@ -34,7 +34,7 @@ class Server
     private $status;
 
     /**
-     * @var IndexStorage
+     * @var IndexStorage|Index[]
      */
     private $indexes;
 
@@ -110,7 +110,7 @@ class Server
     }
 
     /**
-     * @return IndexStorage
+     * @return IndexStorage|Index[]
      */
     public function getIndexes(): IndexStorage
     {

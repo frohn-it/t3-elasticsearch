@@ -5,6 +5,8 @@ namespace BeFlo\T3Elasticsearch\Mapping;
 
 
 use BeFlo\T3Elasticsearch\Hook\Interfaces\MappingPreJsonSerializeHookInterface;
+use BeFlo\T3Elasticsearch\Hook\Interfaces\PostProcessMappingHookInterface;
+use BeFlo\T3Elasticsearch\Hook\Interfaces\PreProcessMappingHookInterface;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
 
 class Mapping implements \JsonSerializable
@@ -23,12 +25,20 @@ class Mapping implements \JsonSerializable
      */
     public function __construct(array $configuration)
     {
+        $this->initHooks(Mapping::class);
         $this->parseMappingConfiguration($configuration);
     }
 
+    /**
+     * @param array $configuration
+     */
     protected function parseMappingConfiguration(array $configuration): void
     {
-
+        $parameter = [&$configuration, $this];
+        $this->executeHook(PreProcessMappingHookInterface::class, $parameter);
+        // @ToDo Implement basic mapping processing
+        $this->executeHook(PostProcessMappingHookInterface::class, $parameter);
+        $this->configuration = $configuration;
     }
 
     /**
@@ -58,4 +68,14 @@ class Mapping implements \JsonSerializable
         return $this->configuration;
     }
 
+    /**
+     * @return \Elastica\Mapping
+     */
+    public function get(): \Elastica\Mapping
+    {
+        $mapping = new \Elastica\Mapping();
+        $mapping->setProperties($this->configuration);
+
+        return $mapping;
+    }
 }

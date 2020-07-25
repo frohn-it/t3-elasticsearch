@@ -12,6 +12,19 @@ services:
     factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
     arguments: ['t3_elasticsearch_cache']
 
+  BeFlo\T3Elasticsearch\Server\ServerLoader:
+    arguments:
+      $indexLoader: '@BeFlo\T3Elasticsearch\Index\IndexLoader'
+
+  BeFlo\T3Elasticsearch\Domain\Dto\Server:
+    autowire: false
+
+  BeFlo\T3Elasticsearch\Index\Index:
+    autowire: false
+
+  BeFlo\T3Elasticsearch\Mapping\Mapping:
+    autowire: false
+
   BeFlo\T3Elasticsearch\Configuration\ConfigurationManager:
     arguments:
       $serverLoader: '@BeFlo\T3Elasticsearch\Server\ServerLoader'

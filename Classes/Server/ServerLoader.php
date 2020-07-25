@@ -6,6 +6,7 @@ namespace BeFlo\T3Elasticsearch\Server;
 
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\ServerLoaderPreAddHookInterface;
+use BeFlo\T3Elasticsearch\Index\Index;
 use BeFlo\T3Elasticsearch\Index\IndexLoader;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
 use BeFlo\T3Elasticsearch\Utility\JsonFileLoaderTrait;
@@ -15,6 +16,13 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Class ServerLoader
+ *
+ * @package BeFlo\T3Elasticsearch\Server
+ *
+ * @internal
+ */
 class ServerLoader implements SingletonInterface
 {
     use HookTrait;
@@ -89,12 +97,12 @@ class ServerLoader implements SingletonInterface
     protected function parseServerConfiguration(string $identifier, array $configuration): void
     {
         if (!empty($configuration['host']) && !empty($configuration['port'])) {
-            $server = new Server($identifier);
+            $server = GeneralUtility::makeInstance(Server::class, $identifier);
             $server->setHost($configuration['host']);
             $server->setPort($configuration['port']);
             foreach ($configuration['indexes'] ?? [] as $indexIdentifier) {
                 $index = $this->indexLoader->getIndex($indexIdentifier);
-                if (!empty($index)) {
+                if ($index instanceof Index) {
                     $index->setServer($server);
                     $server->addIndex($index);
                 }

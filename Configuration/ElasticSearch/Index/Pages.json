@@ -6,7 +6,7 @@
         "shards": 4,
         "replicas": 1
     },
-    "analysis": {},
+    "analyzer": {},
     "filter": {},
     "mapping": {}
 }

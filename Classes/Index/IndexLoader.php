@@ -7,6 +7,7 @@ namespace BeFlo\T3Elasticsearch\Index;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\IndexLoaderPreAddHookInterface;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
 use BeFlo\T3Elasticsearch\Utility\JsonFileLoaderTrait;
+use phpDocumentor\Reflection\DocBlockFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -32,18 +33,19 @@ class IndexLoader implements SingletonInterface
      */
     public function __construct()
     {
-        $this->availableIndexes = new \SplObjectStorage();
+        $this->availableIndexes = new IndexStorage();
         $this->initHooks(IndexLoader::class);
+        $this->loadAvailableIndexes();
     }
 
     /**
      * @param bool $force
      *
-     * @return \SplObjectStorage|Index[]
+     * @return IndexStorage|Index[]
      */
-    public function loadAvailableIndexes(bool $force = false): \SplObjectStorage
+    public function loadAvailableIndexes(bool $force = false): IndexStorage
     {
-        if (empty($this->availableIndexes) || $force === true) {
+        if ($this->availableIndexes->count() === 0 || $force === true) {
             $this->loadIndexesByConfiguration();
             $this->loadIndexesFromDatabase();
         }
