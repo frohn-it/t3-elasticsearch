@@ -7,6 +7,7 @@ namespace BeFlo\T3Elasticsearch\Command;
 use BeFlo\T3Elasticsearch\Configuration\ConfigurationManager;
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Server\ServerLoader;
+use LogicException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;

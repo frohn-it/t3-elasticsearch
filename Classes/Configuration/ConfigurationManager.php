@@ -4,9 +4,11 @@
 namespace BeFlo\T3Elasticsearch\Configuration;
 
 
+use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\ConfigurationManagerCachePostProcessHookInterface;
 use BeFlo\T3Elasticsearch\Server\ServerLoader;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
+use BeFlo\T3Elasticsearch\Utility\ObjectStorage;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 
@@ -86,5 +88,22 @@ class ConfigurationManager implements SingletonInterface
     public function getConfiguration()
     {
         return $this->configuration;
+    }
+
+    /**
+     * @param string $serverIdentifier
+     *
+     * @return Server|null
+     */
+    public function getServer(string $serverIdentifier): ?Server
+    {
+        $server = null;
+        if(!empty($this->configuration['server']) && $this->configuration['server'] instanceof ObjectStorage) {
+            /** @var ObjectStorage $serverStorage */
+            $serverStorage = $this->configuration['server'];
+            $server = $serverStorage->find($serverIdentifier);
+        }
+
+        return $server;
     }
 }

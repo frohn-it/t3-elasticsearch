@@ -8,5 +8,12 @@
     },
     "analyzer": {},
     "filter": {},
-    "mapping": {}
+    "mapping": {
+        "id": {
+            "type": "integer"
+        },
+        "title": {
+            "type": "text"
+        }
+    }
 }

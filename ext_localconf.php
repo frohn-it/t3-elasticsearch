@@ -20,4 +20,5 @@ call_user_func(function() {
     if (!isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheKey]['backend'])) {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheKey]['backend'] = \TYPO3\CMS\Core\Cache\Backend\FileBackend::class;
     }
+    \BeFlo\T3Elasticsearch\Registry\IndexerRegistry::registerIndexer(\BeFlo\T3Elasticsearch\Indexer\PageIndexer::class);
 });

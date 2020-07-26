@@ -10,6 +10,7 @@ use BeFlo\T3Elasticsearch\Index\Index;
 use BeFlo\T3Elasticsearch\Index\IndexLoader;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
 use BeFlo\T3Elasticsearch\Utility\JsonFileLoaderTrait;
+use BeFlo\T3Elasticsearch\Utility\ObjectStorage;
 use SplObjectStorage;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -29,7 +30,7 @@ class ServerLoader implements SingletonInterface
     use JsonFileLoaderTrait;
 
     /**
-     * @var SplObjectStorage|Server[]
+     * @var ObjectStorage|Server[]
      */
     protected $server;
 
@@ -50,13 +51,13 @@ class ServerLoader implements SingletonInterface
      */
     public function __construct(IndexLoader $indexLoader)
     {
-        $this->server = new SplObjectStorage();
+        $this->server = new ObjectStorage();
         $this->indexLoader = $indexLoader;
         $this->initHooks(ServerLoader::class);
     }
 
     /**
-     * @return Server[]|SplObjectStorage
+     * @return Server[]|ObjectStorage
      */
     public function loadAvailableServer(): SplObjectStorage
     {

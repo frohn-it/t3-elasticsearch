@@ -15,6 +15,11 @@ class PageIndexer implements RuntimeIndexerInterface
     const IDENTIFIER = 't3_elasticsearch_page_indexer';
 
     /**
+     * @var Index
+     */
+    protected $index;
+
+    /**
      * @return string
      */
     public static function getIdentifier(): string
@@ -37,6 +42,7 @@ class PageIndexer implements RuntimeIndexerInterface
      */
     public function setIndex(Index $index): IndexerInterface
     {
+        $this->index = $index;
 
         return $this;
     }

@@ -22,7 +22,12 @@ class IndexerRegistry
      */
     public static function registerIndexer(string $className): void
     {
-        self::addIndexer($className, IndexerInterface::class, self::SCOPE_NORMAL);
+        $interfaces = class_implements($className);
+        if(in_array(RuntimeIndexerInterface::class, $interfaces)) {
+            self::addIndexer($className, RuntimeIndexerInterface::class, self::SCOPE_RUNTIME);
+        } else {
+            self::addIndexer($className, IndexerInterface::class, self::SCOPE_NORMAL);
+        }
     }
 
     /**
@@ -39,16 +44,6 @@ class IndexerRegistry
             throw new UnexpectedClassException(sprintf('The indexer "%s" must implement the interface "%s"', $className, $expectedInterface));
         }
         $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][Constants::EXT_KEY]['registry'][$scope][$className::getIdentifier()] = $className;
-    }
-
-    /**
-     * @param string $className
-     *
-     * @throws UnexpectedClassException
-     */
-    public static function registerRuntimeIndexer(string $className): void
-    {
-        self::addIndexer($className, RuntimeIndexerInterface::class, self::SCOPE_RUNTIME);
     }
 
     /**

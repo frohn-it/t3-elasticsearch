@@ -62,11 +62,13 @@ class Index
         $index = $this->getElasticaIndex();
         if ($index->exists() === false || $reCreate === true) {
             $indexConfiguration = [
-                'number_of_shards'   => $this->configuration['config']['shards'],
-                'number_of_replicas' => $this->configuration['config']['replicas'],
-                'analysis'           => [
-                    'analyzer' => $this->configuration['analyzer'],
-                    'filter'   => $this->configuration['filter']
+                'settings' => [
+                    'number_of_shards'   => $this->configuration['config']['shards'],
+                    'number_of_replicas' => $this->configuration['config']['replicas'],
+                    'analysis'           => [
+                        'analyzer' => $this->configuration['analyzer'],
+                        'filter'   => $this->configuration['filter']
+                    ]
                 ]
             ];
             $parameter = [&$indexConfiguration, $this];

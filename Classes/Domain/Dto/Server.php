@@ -5,8 +5,8 @@ namespace BeFlo\T3Elasticsearch\Domain\Dto;
 
 
 use BeFlo\T3Elasticsearch\Index\Index;
-use BeFlo\T3Elasticsearch\Index\IndexStorage;
 use BeFlo\T3Elasticsearch\Server\ServerStatus;
+use BeFlo\T3Elasticsearch\Utility\ObjectStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class Server
@@ -33,7 +33,7 @@ class Server
     private $status;
 
     /**
-     * @var IndexStorage|Index[]
+     * @var ObjectStorage|Index[]
      */
     private $indexes;
 
@@ -45,7 +45,7 @@ class Server
     public function __construct(string $identifier)
     {
         $this->identifier = $identifier;
-        $this->indexes = new IndexStorage();
+        $this->indexes = new ObjectStorage();
     }
 
     /**
@@ -109,19 +109,19 @@ class Server
     }
 
     /**
-     * @return IndexStorage|Index[]
+     * @return ObjectStorage|Index[]
      */
-    public function getIndexes(): IndexStorage
+    public function getIndexes(): ObjectStorage
     {
         return $this->indexes;
     }
 
     /**
-     * @param IndexStorage $indexes
+     * @param ObjectStorage $indexes
      *
      * @return Server
      */
-    public function setIndexes(IndexStorage $indexes): Server
+    public function setIndexes(ObjectStorage $indexes): Server
     {
         $this->indexes = $indexes;
 
