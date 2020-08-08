@@ -6,8 +6,10 @@ namespace BeFlo\T3Elasticsearch\Index;
 
 use BeFlo\T3Elasticsearch\Domain\Dto\IndexData;
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
+use BeFlo\T3Elasticsearch\Hook\Interfaces\PostProcessIndexCreationHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PostProcessIndexingHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PostProcessRuntimeIndexingHookInterface;
+use BeFlo\T3Elasticsearch\Hook\Interfaces\PostRealIndexNameGenerationHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PreProcessIndexConfigurationHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PreProcessIndexingHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PreProcessRuntimeIndexingHookInterface;
@@ -39,7 +41,17 @@ class Index
     /**
      * @var \Elastica\Index
      */
-    protected $elasticaIndex;
+    protected $activeIndex;
+
+    /**
+     * @var \Elastica\Index
+     */
+    protected $inactiveIndex;
+
+    /**
+     * @var array
+     */
+    protected $realIndexNames = [];
 
     /**
      * Index constructor.
@@ -52,6 +64,20 @@ class Index
         $this->identifier = $identifier;
         $this->configuration = $configuration;
         $this->initHooks(Index::class);
+        $this->initRealIndexNames();
+    }
+
+    /**
+     * Initialize the real index names. The given identifier is just an alias
+     */
+    protected function initRealIndexNames(): void
+    {
+        $this->realIndexNames = [
+            $this->identifier . '_' . 'a',
+            $this->identifier . '_' . 'b'
+        ];
+        $parameters = [$this->identifier, &$this->realIndexNames, $this];
+        $this->executeHook(PostRealIndexNameGenerationHookInterface::class, $parameters);
     }
 
     /**
@@ -59,7 +85,7 @@ class Index
      */
     public function create(bool $reCreate = false)
     {
-        $index = $this->getElasticaIndex();
+        $index = $this->getActiveIndex();
         if ($index->exists() === false || $reCreate === true) {
             $indexConfiguration = [
                 'settings' => [
@@ -73,21 +99,34 @@ class Index
             ];
             $parameter = [&$indexConfiguration, $this];
             $this->executeHook(PreProcessIndexConfigurationHookInterface::class, $parameter);
-            $index->create($indexConfiguration, $reCreate);
-            $this->getMapping()->get()->send($index);
+            $mapping = $this->getMapping()->get();
+            $aliasCreated = false;
+            foreach ($this->realIndexNames as $indexName) {
+                $realIndex = Client::get($this->server)->getIndex($indexName);
+                $realIndex->create($indexConfiguration, $reCreate);
+                if ($aliasCreated === false) {
+                    $realIndex->addAlias($this->identifier);
+                    $aliasCreated = true;
+                }
+                $mapping->send($realIndex);
+            }
+            $this->activeIndex = null;
+            $this->getActiveIndex();
+            $parameter = [$this];
+            $this->executeHook(PostProcessIndexCreationHookInterface::class, $parameter);
         }
     }
 
     /**
      * @return \Elastica\Index
      */
-    protected function getElasticaIndex(): \Elastica\Index
+    public function getActiveIndex(): \Elastica\Index
     {
-        if (empty($this->elasticaIndex)) {
-            $this->elasticaIndex = Client::get($this->server)->getIndex($this->identifier);
+        if (empty($this->activeIndex)) {
+            $this->activeIndex = Client::get($this->server)->getIndex($this->identifier);
         }
 
-        return $this->elasticaIndex;
+        return $this->activeIndex;
     }
 
     /**
@@ -103,7 +142,7 @@ class Index
      */
     public function purge(): void
     {
-        $index = $this->getElasticaIndex();
+        $index = $this->getActiveIndex();
         if ($index->exists()) {
             $index->flush();
             // @ToDo Handle response
@@ -116,7 +155,7 @@ class Index
     public function updateMapping(): bool
     {
         $result = false;
-        $index = $this->getElasticaIndex();
+        $index = $this->getActiveIndex();
         if ($index->exists()) {
             $this->getMapping()->get()->send($index);
             $result = true;
@@ -136,7 +175,7 @@ class Index
      */
     public function exist(): bool
     {
-        return $this->getElasticaIndex()->exists();
+        return $this->getActiveIndex()->exists();
     }
 
     /**
@@ -144,13 +183,15 @@ class Index
      */
     public function delete(): void
     {
-        $this->getElasticaIndex()->delete();
+        $this->getActiveIndex()->delete();
     }
 
     /**
      * Index a whole data set
+     *
+     * @param bool $secondRun
      */
-    public function index(): void
+    public function index(bool $secondRun = false): void
     {
         $parameter = [$this];
         $this->executeHook(PreProcessIndexingHookInterface::class, $parameter);
@@ -160,13 +201,50 @@ class Index
                 $indexer->setIndex($this)->index();
             }
         }
+        $this->switchIndexes();
+        if ($secondRun === false) {
+            $this->index(true);
+        }
         $this->executeHook(PostProcessIndexingHookInterface::class, $parameter);
     }
 
     /**
-     * @param IndexData $indexData
+     * Switch index (a => b or b => a)
      */
-    public function runtimeIndex(IndexData $indexData): void
+    public function switchIndexes(): void
+    {
+        $this->activeIndex->removeAlias($this->identifier);
+        $this->inactiveIndex->addAlias($this->identifier);
+        $this->activeIndex = null;
+        $this->inactiveIndex = null;
+        $this->getActiveIndex();
+        $this->getInactiveIndex();
+    }
+
+    /**
+     * @return \Elastica\Index
+     */
+    public function getInactiveIndex(): \Elastica\Index
+    {
+        if (empty($this->inactiveIndex)) {
+            $activeName = $this->activeIndex->getName();
+            foreach ($this->realIndexNames as $indexName) {
+                $index = Client::get($this->server)->getIndex($indexName);
+                if (!$index->hasAlias($this->identifier)) {
+                    $this->inactiveIndex = $index;
+                    break;
+                }
+            }
+        }
+
+        return $this->inactiveIndex;
+    }
+
+    /**
+     * @param IndexData $indexData
+     * @param bool      $secondRun
+     */
+    public function runtimeIndex(IndexData $indexData, bool $secondRun = false): void
     {
         $parameter = [$indexData, $this];
         $this->executeHook(PreProcessRuntimeIndexingHookInterface::class, $parameter);
@@ -175,6 +253,10 @@ class Index
             if (!empty($indexer)) {
                 $indexer->setIndex($this)->index($indexData);
             }
+        }
+        $this->switchIndexes();
+        if ($secondRun === false) {
+            $this->runtimeIndex($indexData, true);
         }
         $this->executeHook(PostProcessRuntimeIndexingHookInterface::class, $parameter);
     }
