@@ -82,4 +82,12 @@ class IndexerRegistry
     {
         return self::getIndexerObjectOrNull($identifier, self::SCOPE_RUNTIME);
     }
+
+    /**
+     * @return array
+     */
+    public static function getAllRuntimeIndexer(): array
+    {
+        return $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][Constants::EXT_KEY]['registry'][self::SCOPE_RUNTIME] ?? [];
+    }
 }

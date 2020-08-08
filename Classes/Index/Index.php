@@ -120,10 +120,20 @@ class Index
     /**
      * @return \Elastica\Index
      */
-    public function getActiveIndex(): \Elastica\Index
+    protected function getActiveIndex(): \Elastica\Index
     {
         if (empty($this->activeIndex)) {
-            $this->activeIndex = Client::get($this->server)->getIndex($this->identifier);
+            foreach($this->realIndexNames as $indexName) {
+                $index = Client::get($this->server)->getIndex($indexName);
+                if($index->hasAlias($this->identifier)) {
+                    $this->activeIndex = $index;
+                    break;
+                }
+            }
+        }
+        if(empty($this->activeIndex)) {
+            $this->activeIndex = Client::get($this->server)->getIndex($this->realIndexNames[0]);
+            $this->activeIndex->addAlias($this->identifier);
         }
 
         return $this->activeIndex;
@@ -213,10 +223,16 @@ class Index
      */
     public function switchIndexes(): void
     {
-        $this->activeIndex->removeAlias($this->identifier);
-        $this->inactiveIndex->addAlias($this->identifier);
-        $this->activeIndex = null;
-        $this->inactiveIndex = null;
+        $this->getActiveIndex();
+        $this->getInactiveIndex();
+        if($this->activeIndex->exists()) {
+            $this->activeIndex->removeAlias($this->identifier);
+            $this->activeIndex = null;
+        }
+        if($this->inactiveIndex->exists()) {
+            $this->inactiveIndex->addAlias($this->identifier);
+            $this->inactiveIndex = null;
+        }
         $this->getActiveIndex();
         $this->getInactiveIndex();
     }
@@ -224,10 +240,9 @@ class Index
     /**
      * @return \Elastica\Index
      */
-    public function getInactiveIndex(): \Elastica\Index
+    protected function getInactiveIndex(): \Elastica\Index
     {
         if (empty($this->inactiveIndex)) {
-            $activeName = $this->activeIndex->getName();
             foreach ($this->realIndexNames as $indexName) {
                 $index = Client::get($this->server)->getIndex($indexName);
                 if (!$index->hasAlias($this->identifier)) {
@@ -241,24 +256,33 @@ class Index
     }
 
     /**
+     * @return \Elastica\Index
+     */
+    public function getElasticaIndex(): \Elastica\Index
+    {
+        return $this->getActiveIndex();
+    }
+    /**
      * @param IndexData $indexData
      * @param bool      $secondRun
      */
     public function runtimeIndex(IndexData $indexData, bool $secondRun = false): void
     {
-        $parameter = [$indexData, $this];
-        $this->executeHook(PreProcessRuntimeIndexingHookInterface::class, $parameter);
-        foreach ($this->configuration['config']['indexer'] ?? [] as $indexerIdentifier) {
-            $indexer = IndexerRegistry::getRuntimeIndexer($indexerIdentifier);
-            if (!empty($indexer)) {
-                $indexer->setIndex($this)->index($indexData);
+        if(!empty($this->configuration['config']['indexer'])) {
+            $parameter = [$indexData, $this];
+            $this->executeHook(PreProcessRuntimeIndexingHookInterface::class, $parameter);
+            foreach ($this->configuration['config']['indexer'] ?? [] as $indexerIdentifier) {
+                $indexer = IndexerRegistry::getRuntimeIndexer($indexerIdentifier);
+                if (!empty($indexer)) {
+                    $indexer->setIndex($this)->index($indexData);
+                }
             }
+            $this->switchIndexes();
+            if ($secondRun === false) {
+                $this->runtimeIndex($indexData, true);
+            }
+            $this->executeHook(PostProcessRuntimeIndexingHookInterface::class, $parameter);
         }
-        $this->switchIndexes();
-        if ($secondRun === false) {
-            $this->runtimeIndex($indexData, true);
-        }
-        $this->executeHook(PostProcessRuntimeIndexingHookInterface::class, $parameter);
     }
 
     /**

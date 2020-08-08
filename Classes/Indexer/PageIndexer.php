@@ -6,6 +6,7 @@ namespace BeFlo\T3Elasticsearch\Indexer;
 
 use BeFlo\T3Elasticsearch\Domain\Dto\IndexData;
 use BeFlo\T3Elasticsearch\Index\Index;
+use Elastica\Document;
 
 class PageIndexer implements RuntimeIndexerInterface
 {
@@ -20,6 +21,11 @@ class PageIndexer implements RuntimeIndexerInterface
     protected $index;
 
     /**
+     * @var IndexData
+     */
+    protected $indexData;
+
+    /**
      * @return string
      */
     public static function getIdentifier(): string
@@ -32,7 +38,13 @@ class PageIndexer implements RuntimeIndexerInterface
      */
     public function index(IndexData $data = null): void
     {
-        // TODO: Implement index() method.
+        $this->indexData = $data;
+        $documentData = [
+            'id' => $this->indexData->getTypoScriptFrontEndController()->page['uid'],
+            'title' => $this->indexData->getTypoScriptFrontEndController()->page['title'],
+        ];
+        $document = new Document($documentData['uid'], $documentData);
+        $this->index->getElasticaIndex()->addDocument($document);
     }
 
     /**

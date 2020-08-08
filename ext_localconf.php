@@ -21,4 +21,6 @@ call_user_func(function() {
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['caching']['cacheConfigurations'][$cacheKey]['backend'] = \TYPO3\CMS\Core\Cache\Backend\FileBackend::class;
     }
     \BeFlo\T3Elasticsearch\Registry\IndexerRegistry::registerIndexer(\BeFlo\T3Elasticsearch\Indexer\PageIndexer::class);
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = \BeFlo\T3Elasticsearch\Hook\RuntimeIndexHook::class . '->executeRuntimeIndexer';
 });
