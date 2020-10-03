@@ -122,18 +122,24 @@ class Index
      */
     protected function getActiveIndex(): \Elastica\Index
     {
+        $existingFound = false;
         if (empty($this->activeIndex)) {
             foreach($this->realIndexNames as $indexName) {
                 $index = Client::get($this->server)->getIndex($indexName);
-                if($index->hasAlias($this->identifier)) {
+                if($index->exists() && $index->hasAlias($this->identifier)) {
                     $this->activeIndex = $index;
                     break;
+                }
+                if($index->exists()) {
+                    $existingFound = true;
                 }
             }
         }
         if(empty($this->activeIndex)) {
             $this->activeIndex = Client::get($this->server)->getIndex($this->realIndexNames[0]);
-            $this->activeIndex->addAlias($this->identifier);
+            if($existingFound === true) {
+                $this->activeIndex->addAlias($this->identifier);
+            }
         }
 
         return $this->activeIndex;
@@ -299,6 +305,14 @@ class Index
     public function getServer(): Server
     {
         return $this->server;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfiguration(): array
+    {
+        return $this->configuration;
     }
 
     /**
