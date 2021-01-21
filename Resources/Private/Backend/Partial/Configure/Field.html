@@ -1,0 +1,20 @@
+<f:if condition="{field.children}">
+    <f:then>
+        <div class="row sub-elements">
+            <div class="col-xs-12 col-md-2 col-lg-1"><f:form.checkbox name="activeFields" value="{field.identifier}" /></div>
+            <div class="col-xs-12 col-md-4 col-lg-4"><b>{field.label}</b></div>
+            <div class="col-xs-12">
+                <div class="sub-data" data-sub="{field.children -> f:format.json()}"></div>
+            </div>
+        </div>
+    </f:then>
+    <f:else>
+        <div class="row">
+            <div class="col-xs-12 col-md-2 col-lg-1" style="padding-top: 6px;"><f:form.checkbox name="activeFields" value="{field.identifier}" /></div>
+            <div class="col-xs-12 col-md-4 col-lg-4" style="padding-top: 8px;"><b>{field.label}</b></div>
+            <div class="col-xs-12 col-md-6 col-lg-7">
+                <f:render partial="Configure/DataType" arguments="{identifier: field.identifier, type: field.type}" />
+            </div>
+        </div>
+    </f:else>
+</f:if>

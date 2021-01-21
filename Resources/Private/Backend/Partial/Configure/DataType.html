@@ -1,0 +1,61 @@
+<div class="form-group" style="margin-bottom: 0;">
+    <f:form.select name="{identifier}" value="{type}" class="form-control">
+        <f:form.select.option>binary</f:form.select.option>
+        <f:form.select.option>boolean</f:form.select.option>
+        <f:form.select.option>alias</f:form.select.option>
+        <f:form.select.option>ip</f:form.select.option>
+        <f:form.select.option>murmur3</f:form.select.option>
+        <f:form.select.option>histogram</f:form.select.option>
+        <f:form.select.optgroup label="Keyword types">
+            <f:form.select.option>keyword</f:form.select.option>
+            <f:form.select.option>constant_keyword</f:form.select.option>
+            <f:form.select.option>wildcard</f:form.select.option>
+        </f:form.select.optgroup>
+        <f:form.select.optgroup label="Text types">
+            <f:form.select.option>text</f:form.select.option>
+            <f:form.select.option>annotated-text</f:form.select.option>
+            <f:form.select.option>completion</f:form.select.option>
+            <f:form.select.option>search_as_you_type</f:form.select.option>
+            <f:form.select.option>token_count</f:form.select.option>
+        </f:form.select.optgroup>
+        <f:form.select.optgroup label="Number types">
+            <f:form.select.option>long</f:form.select.option>
+            <f:form.select.option>integer</f:form.select.option>
+            <f:form.select.option>short</f:form.select.option>
+            <f:form.select.option>byte</f:form.select.option>
+            <f:form.select.option>double</f:form.select.option>
+            <f:form.select.option>float</f:form.select.option>
+            <f:form.select.option>half_float</f:form.select.option>
+            <f:form.select.option>scaled_float</f:form.select.option>
+        </f:form.select.optgroup>
+        <f:form.select.optgroup label="Date types">
+            <f:form.select.option>date</f:form.select.option>
+            <f:form.select.option>date_nanos</f:form.select.option>
+        </f:form.select.optgroup>
+        <f:form.select.optgroup label="Object types">
+            <f:form.select.option>object</f:form.select.option>
+            <f:form.select.option>flattened</f:form.select.option>
+            <f:form.select.option>nested</f:form.select.option>
+            <f:form.select.option>join</f:form.select.option>
+        </f:form.select.optgroup>
+        <f:form.select.optgroup label="Range types">
+            <f:form.select.option>integer_range</f:form.select.option>
+            <f:form.select.option>float_range</f:form.select.option>
+            <f:form.select.option>long_range</f:form.select.option>
+            <f:form.select.option>double_range</f:form.select.option>
+            <f:form.select.option>date_range</f:form.select.option>
+            <f:form.select.option>ip_range</f:form.select.option>
+        </f:form.select.optgroup>
+        <f:form.select.optgroup label="Document ranking types">
+            <f:form.select.option>dense_vector</f:form.select.option>
+            <f:form.select.option>rank_feature</f:form.select.option>
+            <f:form.select.option>rank_features</f:form.select.option>
+        </f:form.select.optgroup>
+        <f:form.select.optgroup label="Special data types">
+            <f:form.select.option>geo_point</f:form.select.option>
+            <f:form.select.option>geo_shape</f:form.select.option>
+            <f:form.select.option>point</f:form.select.option>
+            <f:form.select.option>shape</f:form.select.option>
+        </f:form.select.optgroup>
+    </f:form.select>
+</div>

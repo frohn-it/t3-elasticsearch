@@ -1,0 +1,23 @@
+<div class="container-fluid">
+    <div class="row bs-wizard">
+
+        <div class="col-xs-4 bs-wizard-step {f:if(condition: '{currentStep} > 1', then: 'complete')}{f:if(condition: '{currentStep} == 1', then: 'active')}">
+            <div class="text-center bs-wizard-stepnum">Table selection</div>
+            <div class="progress"><div class="progress-bar"></div></div>
+            <a href="#" class="bs-wizard-dot"></a>
+        </div>
+
+        <div class="col-xs-4 bs-wizard-step {f:if(condition: '{currentStep} > 2', then: 'complete')}{f:if(condition: '{currentStep} == 2', then: 'active')}{f:if(condition: '{currentStep} < 2', then: 'disabled')}">
+            <div class="text-center bs-wizard-stepnum">Configure fields</div>
+            <div class="progress"><div class="progress-bar"></div></div>
+            <a href="#" class="bs-wizard-dot"></a>
+        </div>
+
+        <div class="col-xs-4 bs-wizard-step {f:if(condition: '{currentStep} > 3', then: 'complete')}{f:if(condition: '{currentStep} == 3', then: 'active')}{f:if(condition: '{currentStep} < 3', then: 'disabled')}">
+            <div class="text-center bs-wizard-stepnum">Finish the configuration</div>
+            <div class="progress"><div class="progress-bar"></div></div>
+            <a href="#" class="bs-wizard-dot"></a>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,15 @@
+module {
+    tx_t3elasticsearch {
+        view {
+            templateRootPaths {
+                10 = EXT:t3_elasticsearch/Resources/Private/Backend/Template/
+            }
+            partialRootPaths {
+                10 = EXT:t3_elasticsearch/Resources/Private/Backend/Partial/
+            }
+            layoutRootPaths {
+                10 = EXT:t3_elasticsearch/Resources/Private/Backend/Layout/
+            }
+        }
+    }
+}

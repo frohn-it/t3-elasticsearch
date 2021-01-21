@@ -97,6 +97,9 @@ class Index
                     ]
                 ]
             ];
+            if(!empty($this->configuration['config']['additionalConfiguration'])) {
+                $indexConfiguration = array_merge_recursive($indexConfiguration, $this->configuration['config']['additionalConfiguration']);
+            }
             $parameter = [&$indexConfiguration, $this];
             $this->executeHook(PreProcessIndexConfigurationHookInterface::class, $parameter);
             $mapping = $this->getMapping()->get();

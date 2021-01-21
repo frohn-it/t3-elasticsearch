@@ -6,6 +6,18 @@
             <authorEmail>info@t3tech.de</authorEmail>
         </header>
         <body>
+            <trans-unit id="header.table_selection">
+                <source>Table selection</source>
+            </trans-unit>
+            <trans-unit id="header.table_selection.description">
+                <source>Select a table to create a elasticsearch configuration for it</source>
+            </trans-unit>
+            <trans-unit id="header.field_configuration">
+                <source>Field configuration</source>
+            </trans-unit>
+            <trans-unit id="header.field_configuration.description">
+                <source>Configure which fields should be respected for the mapping</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

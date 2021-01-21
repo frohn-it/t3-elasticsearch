@@ -12,9 +12,6 @@
             <trans-unit id="backend_layout.column.normal">
                 <source>Normal</source>
             </trans-unit>
-            <trans-unit id="plugin.title">
-                <source>ElasticSearch</source>
-            </trans-unit>
         </body>
     </file>
 </xliff>

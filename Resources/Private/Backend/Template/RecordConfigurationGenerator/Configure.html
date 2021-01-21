@@ -1,0 +1,30 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers">
+
+<f:layout name="Default" />
+
+<f:section name="headline">
+    <h1><f:translate key="header.field_configuration" /></h1>
+</f:section>
+
+<f:section name="content">
+    <f:flashMessages />
+    <f:form action="configure">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <f:translate key="header.field_configuration.description" />
+            </div>
+            <div class="panel-body">
+                <f:render partial="Progress" arguments="{currentStep: 2}" />
+                <f:render partial="Configure/Base" arguments="{_all}" />
+            </div>
+            <div class="panel-footer">
+                <button class="pull-right btn btn-primary">Finish configuration <i class="fa fa-chevron-right"></i></button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </f:form>
+</f:section>
+
+</html>

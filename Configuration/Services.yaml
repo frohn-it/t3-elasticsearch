@@ -33,3 +33,7 @@ services:
   BeFlo\T3Elasticsearch\Backend\ToolbarItems\ElasticSearchToolbarItem:
     arguments:
       $configurationManager: '@BeFlo\T3Elasticsearch\Configuration\ConfigurationManager'
+
+  BeFlo\T3Elasticsearch\Service\TableFieldAnalyzerService:
+    arguments:
+      $languageService: '@TYPO3\CMS\Core\Localization\LanguageService'
