@@ -34,7 +34,6 @@ class Client
      */
     protected function __construct(Server $server)
     {
-        $this->initHooks(Client::class);
         $this->server = $server;
         $this->connect();
     }

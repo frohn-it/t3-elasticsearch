@@ -17,17 +17,6 @@ class SearchController extends ActionController
     use HookTrait;
 
     /**
-     * Initializes the controller before invoking an action method.
-     *
-     * Override this method to solve tasks which all actions have in
-     * common.
-     */
-    protected function initializeAction()
-    {
-        $this->initHooks(self::class);
-    }
-
-    /**
      * @throws StopActionException
      */
     public function indexAction()

@@ -26,7 +26,6 @@ class Mapping implements JsonSerializable
      */
     public function __construct(array $configuration)
     {
-        $this->initHooks(Mapping::class);
         $this->parseMappingConfiguration($configuration);
     }
 

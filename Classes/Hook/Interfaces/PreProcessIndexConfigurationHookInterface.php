@@ -6,7 +6,7 @@ namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 
 use BeFlo\T3Elasticsearch\Index\Index;
 
-interface PreProcessIndexConfigurationHookInterface
+interface PreProcessIndexConfigurationHookInterface extends BaseHookInterface
 {
 
     /**

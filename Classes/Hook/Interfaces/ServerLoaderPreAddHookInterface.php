@@ -7,7 +7,7 @@ namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Server\ServerLoader;
 
-interface ServerLoaderPreAddHookInterface
+interface ServerLoaderPreAddHookInterface extends BaseHookInterface
 {
     /**
      * @param Server       $server

@@ -53,7 +53,6 @@ class ServerStatus implements LoggerAwareInterface
      */
     protected function init()
     {
-        $this->initHooks(ServerStatus::class);
         try {
             $client = Client::get($this->server);
             $status = $client->getStatus();

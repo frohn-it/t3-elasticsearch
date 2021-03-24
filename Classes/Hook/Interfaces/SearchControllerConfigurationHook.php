@@ -4,7 +4,7 @@
 namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 
 
-interface SearchControllerConfigurationHook
+interface SearchControllerConfigurationHook extends BaseHookInterface
 {
     public function manipulateConfiguration(array $configuration);
 }

@@ -53,7 +53,6 @@ class ServerLoader implements SingletonInterface
     {
         $this->server = new ObjectStorage();
         $this->indexLoader = $indexLoader;
-        $this->initHooks(ServerLoader::class);
     }
 
     /**

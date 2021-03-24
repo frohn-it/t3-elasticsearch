@@ -6,7 +6,7 @@ namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 
 use BeFlo\T3Elasticsearch\Mapping\Mapping;
 
-interface PreProcessMappingHookInterface
+interface PreProcessMappingHookInterface extends BaseHookInterface
 {
 
     /**

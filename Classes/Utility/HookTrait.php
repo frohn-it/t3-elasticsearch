@@ -4,28 +4,15 @@
 namespace BeFlo\T3Elasticsearch\Utility;
 
 
+use BeFlo\T3Elasticsearch\Service\HookService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 trait HookTrait
 {
-
     /**
-     * @var array
+     * @var HookService
      */
-    protected $hookObjects = [];
-
-
-    /**
-     * @param string $baseClassName
-     *
-     * @return void
-     */
-    protected function initHooks(string $baseClassName): void
-    {
-        foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][$baseClassName] ?? [] as $className) {
-            $this->hookObjects[] = GeneralUtility::makeInstance($className);
-        }
-    }
+    private static $hookService;
 
 
     /**
@@ -34,12 +21,13 @@ trait HookTrait
      */
     protected function executeHook(string $hookInterfaceName, array &$parameter)
     {
+        if(!self::$hookService instanceof HookService) {
+            self::$hookService = GeneralUtility::makeInstance(HookService::class);
+        }
         $methods = get_class_methods($hookInterfaceName);
-        foreach ($this->hookObjects as $hookObject) {
-            if ($hookObject instanceof $hookInterfaceName) {
-                foreach ($methods as $method) {
-                    $hookObject->{$method}(...$parameter);
-                }
+        foreach (self::$hookService->getHooks($hookInterfaceName) as $hookObject) {
+            foreach ($methods as $method) {
+                $hookObject->{$method}(...$parameter);
             }
         }
     }

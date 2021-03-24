@@ -6,7 +6,7 @@ namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 
 use BeFlo\T3Elasticsearch\Domain\Dto\IndexData;
 
-interface PreRuntimeProcessDataAggregationHookInterface
+interface PreRuntimeProcessDataAggregationHookInterface extends BaseHookInterface
 {
 
     /**

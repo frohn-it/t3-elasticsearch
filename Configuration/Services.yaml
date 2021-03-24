@@ -37,3 +37,11 @@ services:
   BeFlo\T3Elasticsearch\Service\TableFieldAnalyzerService:
     arguments:
       $languageService: '@TYPO3\CMS\Core\Localization\LanguageService'
+
+  _instanceof:
+    BeFlo\T3Elasticsearch\Hook\Interfaces\BaseHookInterface:
+      tags: [ 't3_elasticsearch.hook' ]
+
+  BeFlo\T3Elasticsearch\Service\HookService:
+    arguments: [ !tagged t3_elasticsearch.hook ]
+    public: true

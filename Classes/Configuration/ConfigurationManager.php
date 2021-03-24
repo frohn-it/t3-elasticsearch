@@ -43,7 +43,6 @@ class ConfigurationManager implements SingletonInterface
     {
         $this->serverLoader = $serverLoader;
         $this->cache = $cache;
-        $this->initHooks(ConfigurationManager::class);
         $this->loadConfigurationFromCache();
     }
 

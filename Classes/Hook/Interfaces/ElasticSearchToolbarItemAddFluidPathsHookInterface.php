@@ -6,7 +6,7 @@ namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 
 use BeFlo\T3Elasticsearch\Backend\ToolbarItems\ElasticSearchToolbarItem;
 
-interface ElasticSearchToolbarItemAddFluidPathsHookInterface
+interface ElasticSearchToolbarItemAddFluidPathsHookInterface extends BaseHookInterface
 {
 
     /**

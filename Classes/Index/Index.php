@@ -63,7 +63,6 @@ class Index
     {
         $this->identifier = $identifier;
         $this->configuration = $configuration;
-        $this->initHooks(Index::class);
         $this->initRealIndexNames();
     }
 

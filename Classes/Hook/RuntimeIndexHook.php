@@ -27,7 +27,6 @@ class RuntimeIndexHook
         $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
         $configuration = $configurationManager->getConfiguration();
         if ($typoScriptFrontEndController->page['no_search'] === 0 && (!empty($configuration['server']) && $configuration['server'] instanceof ObjectStorage)) {
-            $this->initHooks(RuntimeIndexHook::class);
             $indexData = new IndexData($typoScriptFrontEndController);
             $parameter = [$indexData];
             $this->executeHook(PreRuntimeProcessDataAggregationHookInterface::class, $parameter);

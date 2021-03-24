@@ -6,7 +6,7 @@ namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 
 use BeFlo\T3Elasticsearch\Server\ServerStatus;
 
-interface ServerStatusPostProcessHookInterface
+interface ServerStatusPostProcessHookInterface extends BaseHookInterface
 {
     /**
      * @param array        $serverStatus

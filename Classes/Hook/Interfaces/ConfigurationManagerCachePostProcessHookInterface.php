@@ -6,7 +6,7 @@ namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 
 use BeFlo\T3Elasticsearch\Configuration\ConfigurationManager;
 
-interface ConfigurationManagerCachePostProcessHookInterface
+interface ConfigurationManagerCachePostProcessHookInterface extends BaseHookInterface
 {
 
     /**

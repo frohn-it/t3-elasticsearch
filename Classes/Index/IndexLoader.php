@@ -34,7 +34,6 @@ class IndexLoader implements SingletonInterface
     public function __construct()
     {
         $this->availableIndexes = new ObjectStorage();
-        $this->initHooks(IndexLoader::class);
         $this->loadAvailableIndexes();
     }
 

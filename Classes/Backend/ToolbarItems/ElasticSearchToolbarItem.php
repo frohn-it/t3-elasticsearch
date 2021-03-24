@@ -34,7 +34,6 @@ class ElasticSearchToolbarItem implements ToolbarItemInterface
     public function __construct(ConfigurationManager $configurationManager)
     {
         $this->configurationManager = $configurationManager;
-        $this->initHooks(ElasticSearchToolbarItem::class);
         $this->initView();
     }
 

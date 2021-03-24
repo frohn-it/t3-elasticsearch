@@ -7,7 +7,7 @@ namespace BeFlo\T3Elasticsearch\Hook\Interfaces;
 use BeFlo\T3Elasticsearch\Domain\Dto\IndexData;
 use BeFlo\T3Elasticsearch\Index\Index;
 
-interface PostProcessRuntimeIndexingHookInterface
+interface PostProcessRuntimeIndexingHookInterface extends BaseHookInterface
 {
     /**
      * @param IndexData $indexData
