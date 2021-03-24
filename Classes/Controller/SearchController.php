@@ -27,9 +27,14 @@ class SearchController extends ActionController
         $this->initHooks(self::class);
     }
 
+    /**
+     * @throws StopActionException
+     */
     public function indexAction()
     {
-
+        if($this->request->hasArgument('searchTerm')) {
+            $this->redirect('result', null, null, $this->request->getArguments());
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 {
     "localhost": {
-        "host": "localhost",
+        "host": "elastic.ddev.site",
         "port": 9200,
         "indexes": [
             "pages"
