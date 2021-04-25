@@ -1,4 +1,5 @@
 {
+    "label": "LLL:EXT:t3_elasticsearch/Resources/Private/Language/locallang_be.xlf:index.pages.label",
     "config": {
         "indexer": [
             "t3_elasticsearch_page_indexer"
@@ -9,11 +10,60 @@
     "analyzer": {},
     "filter": {},
     "mapping": {
-        "id": {
-            "type": "integer"
+        "uid": {
+            "type": "integer",
+            "index": false
         },
         "title": {
             "type": "text"
+        },
+        "description": {
+            "type": "text"
+        },
+        "canonical": {
+            "type": "keyword"
+        },
+        "abstract": {
+            "type": "text"
+        },
+        "keywords": {
+            "type": "keyword"
+        },
+        "author": {
+            "type": "keyword"
+        },
+        "author_mail": {
+            "type": "keyword"
+        },
+        "starttime": {
+            "type": "integer",
+            "index": false
+        },
+        "endtime": {
+            "type": "integer",
+            "index": false
+        },
+        "categories": {
+            "type": "keyword"
+        },
+        "content": {
+            "type": "text"
+        },
+        "doktype": {
+            "type": "keyword",
+            "index": false
+        }
+    },
+    "aggregations": {
+        "doktype_aggregation": {
+            "aggregation": "BeFlo\\T3Elasticsearch\\Aggregation\\BasicAggregations\\SelectAggregation",
+            "field": "doktype",
+            "label": "LLL:EXT:t3_elasticsearch/Resources/Private/Language/locallang_be.xlf:index.pages.aggregations.doktype",
+            "config": {
+                "terms": {
+                    "field": "doktype"
+                }
+            }
         }
     }
 }

@@ -41,7 +41,13 @@ services:
   _instanceof:
     BeFlo\T3Elasticsearch\Hook\Interfaces\BaseHookInterface:
       tags: [ 't3_elasticsearch.hook' ]
+    BeFlo\T3Elasticsearch\Aggregation\AggregationInterface:
+      tags: [ 't3_elasticsearch.aggregation' ]
 
   BeFlo\T3Elasticsearch\Service\HookService:
     arguments: [ !tagged t3_elasticsearch.hook ]
+    public: true
+
+  BeFlo\T3Elasticsearch\Aggregation\AggregationManager:
+    arguments: [ !tagged t3_elasticsearch.aggregation ]
     public: true

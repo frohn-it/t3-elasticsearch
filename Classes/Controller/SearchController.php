@@ -21,7 +21,7 @@ class SearchController extends ActionController
      */
     public function indexAction()
     {
-        if($this->request->hasArgument('searchTerm')) {
+        if ($this->request->hasArgument('searchTerm')) {
             $this->redirect('result', null, null, $this->request->getArguments());
         }
     }
@@ -31,17 +31,21 @@ class SearchController extends ActionController
      */
     public function resultAction()
     {
-        if(!$this->request->hasArgument('searchTerm')) {
+        if (!$this->request->hasArgument('searchTerm')) {
             $this->redirect('index');
         }
         $data = $this->configurationManager->getContentObject()->data;
-        if(!empty($data['pi_flexform'])) {
+        if (!empty($data['pi_flexform'])) {
             $flexFormService = GeneralUtility::makeInstance(FlexFormService::class);
             $configuration = $flexFormService->convertFlexFormContentToArray($data['pi_flexform']);
             $searchService = GeneralUtility::makeInstance(SearchService::class);
             $params = [&$configuration];
             $this->executeHook(SearchControllerConfigurationHook::class, $params);
-            $searchService->search($configuration);
+            try {
+                $this->view->assign('results', $searchService->search($configuration, $this->request->getArgument('searchTerm')));
+            } catch (\Exception $exception) {
+                $this->view->assign('error', $exception);
+            }
         } else {
             $this->redirect('index');
         }

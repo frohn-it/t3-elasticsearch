@@ -11,7 +11,40 @@
                 </TCEforms>
                 <type>array</type>
                 <el>
-
+                    <settings.server>
+                        <TCEforms>
+                            <label>LLL:EXT:t3_elasticsearch/Resources/Private/Language/locallang_be.xlf:plugin.settings.elasticsearch.server</label>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectSingle</renderType>
+                                <itemsProcFunc>BeFlo\T3Elasticsearch\TCA\PluginUserFunc->getAvailableServer</itemsProcFunc>
+                            </config>
+                        </TCEforms>
+                    </settings.server>
+                    <settings.indexes>
+                        <TCEforms>
+                            <label>LLL:EXT:t3_elasticsearch/Resources/Private/Language/locallang_be.xlf:plugin.settings.elasticsearch.indexes</label>
+                            <displayCond>FIELD:settings.server:REQ:true</displayCond>
+                            <onChange>reload</onChange>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <itemsProcFunc>BeFlo\T3Elasticsearch\TCA\PluginUserFunc->getAvailableIndexes</itemsProcFunc>
+                            </config>
+                        </TCEforms>
+                    </settings.indexes>
+                    <settings.aggregations>
+                        <TCEforms>
+                            <label>LLL:EXT:t3_elasticsearch/Resources/Private/Language/locallang_be.xlf:plugin.settings.elasticsearch.indexes</label>
+                            <displayCond>FIELD:settings.indexes:REQ:true</displayCond>
+                            <config>
+                                <type>select</type>
+                                <renderType>selectMultipleSideBySide</renderType>
+                                <itemsProcFunc>BeFlo\T3Elasticsearch\TCA\PluginUserFunc->getAvailableAggregations</itemsProcFunc>
+                            </config>
+                        </TCEforms>
+                    </settings.aggregations>
                 </el>
             </ROOT>
         </sDEF>

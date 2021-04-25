@@ -15,6 +15,22 @@
             <trans-unit id="plugin.title">
                 <source>ElasticSearch</source>
             </trans-unit>
+            <trans-unit id="plugin.settings.elasticsearch.server">
+                <source>Server</source>
+            </trans-unit>
+            <trans-unit id="plugin.settings.elasticsearch.indexes">
+                <source>Indexes</source>
+            </trans-unit>
+            <trans-unit id="backend.settings.pageUpdateTables">
+                <source>List of tables for reset page last index on change</source>
+            </trans-unit>
+
+            <trans-unit id="index.pages.label">
+                <source>Pages</source>
+            </trans-unit>
+            <trans-unit id="index.pages.aggregations.doktype">
+                <source>Page type</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

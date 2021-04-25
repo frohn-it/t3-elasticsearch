@@ -91,8 +91,7 @@ class ConfigurationManager implements SingletonInterface
 
     /**
      * @param string $serverIdentifier
-     *
-     * @return Server|null
+     * @return null|Server
      */
     public function getServer(string $serverIdentifier): ?Server
     {

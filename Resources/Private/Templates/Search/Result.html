@@ -1,1 +1,18 @@
-Results
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:layout name="Default" />
+<f:section name="Main">
+
+    <f:if condition="{error}">
+        <f:then>
+            <div class="alert alert-danger" role="alert">
+                <h3>Oops, an error occurred!</h3>
+                {error.message}
+            </div>
+        </f:then>
+        <f:else>
+            <f:Debug>{_all}</f:Debug>
+        </f:else>
+    </f:if>
+
+</f:section>
+</html>

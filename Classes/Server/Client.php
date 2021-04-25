@@ -7,6 +7,7 @@ namespace BeFlo\T3Elasticsearch\Server;
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\ClientPreConnectionHookInterface;
 use BeFlo\T3Elasticsearch\Utility\HookTrait;
+use Elastica\Request;
 
 class Client
 {
@@ -85,5 +86,30 @@ class Client
         return $result;
     }
 
+    /**
+     * @param string $path
+     * @param array $query
+     *
+     * @return array
+     */
+    public function search(string $path, array $query = []): array
+    {
+        $client = new \GuzzleHttp\Client([
+            'base_uri' => $this->server->getHost() . ':' . $this->server->getPort()
+        ]);
+        $response = $client->post($path, [
+            'json' => $query
+        ]);
+
+        return (array)json_decode($response->getBody()->getContents(), true);
+    }
+
+    /**
+     * @return Server
+     */
+    public function getServer(): Server
+    {
+        return $this->server;
+    }
 
 }

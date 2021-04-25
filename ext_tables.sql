@@ -38,3 +38,7 @@ CREATE TABLE tx_t3elasticsearch_index (
     PRIMARY KEY (uid),
     KEY parent (pid)
 );
+
+CREATE TABLE pages (
+    tx_t3elasticsearch_last_indexed int(11) DEFAULT '0' NOT NULL,
+);

@@ -14,7 +14,6 @@ trait HookTrait
      */
     private static $hookService;
 
-
     /**
      * @param string $hookInterfaceName
      * @param array  ...$parameter
