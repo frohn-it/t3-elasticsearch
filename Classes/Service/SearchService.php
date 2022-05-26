@@ -8,8 +8,11 @@ use BeFlo\T3Elasticsearch\Aggregation\AggregationManager;
 use BeFlo\T3Elasticsearch\Configuration\ConfigurationManager;
 use BeFlo\T3Elasticsearch\Domain\Dto\Server;
 use BeFlo\T3Elasticsearch\Exceptions\InvalidConfigurationException;
+use BeFlo\T3Elasticsearch\Filter\FilterInterface;
+use BeFlo\T3Elasticsearch\Filter\FilterManager;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\AggregationConfigurationCollectPostProcessHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\BaseSearchQueryPostProcessHookInterface;
+use BeFlo\T3Elasticsearch\Hook\Interfaces\PostProcessBaseFilterArrayHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PostProcessFilterHookInterface;
 use BeFlo\T3Elasticsearch\Hook\Interfaces\PostProcessFinalSearchQueryHookInterface;
 use BeFlo\T3Elasticsearch\Index\Index;
@@ -68,11 +71,11 @@ class SearchService
             $this
         ];
         $this->executeHook(PostProcessFinalSearchQueryHookInterface::class, $parameters);
-//        echo '<pre>================<p>' . __CLASS__ . '::' . __LINE__ . '</p>';
-//        var_dump(json_encode($query));
-//        var_dump($path);
-//        echo '<p>================</p></pre>';
-//        die();
+        echo '<pre>================<p>' . __CLASS__ . '::' . __LINE__ . '</p>';
+        var_dump(json_encode($query));
+        var_dump($path);
+        echo '<p>================</p></pre>';
+        die();
         $result = $this->client->search($this->getPath(), $query);
 
         return $result;
@@ -98,8 +101,13 @@ class SearchService
         return $aggregationConfigurations;
     }
 
-    private function addFilter(array &$query, array $aggregations)
+    /**
+     * @param array $query
+     * @param array $aggregations
+     */
+    private function addFilter(array &$query, array $aggregations): void
     {
+        $filter = [];
         $arguments = GeneralUtility::_GP('tx_t3elasticsearch_elasticsearch');
         if(!empty($arguments['filter'])) {
             $configurations = [];
@@ -109,12 +117,53 @@ class SearchService
                 }
             }
             $filter = $this->aggregationManager->getFilter($configurations);
-            $parameters = [&$filter];
-            $this->executeHook(PostProcessFilterHookInterface::class, $parameters);
-            if(!empty($filter)) {
-                $query['query']['bool']['filter'] = $filter;
+        }
+        $baseFilterArray = $this->getFilterForIndexes();
+        foreach($baseFilterArray as $baseFilter) {
+            $part = $baseFilter->getQueryFilterPart();
+            if(!empty($part)) {
+                $filter[] = $part;
             }
         }
+        $parameters = [&$filter];
+        $this->executeHook(PostProcessFilterHookInterface::class, $parameters);
+        if(!empty($filter)) {
+            $query['query']['bool']['filter'] = $filter;
+        }
+    }
+
+    /**
+     * @return FilterInterface[]
+     */
+    private function getFilterForIndexes(): array
+    {
+        $result = [];
+        if(!empty($this->configuration['settings']['indexes'])) {
+            $indexArray = GeneralUtility::trimExplode(',', $this->configuration['settings']['indexes'], true);
+            if(!empty($indexArray)) {
+                $filterManager = GeneralUtility::makeInstance(FilterManager::class);
+                $indexes = $this->client->getServer()->getIndexes();
+                foreach($indexArray as $indexName) {
+                    $index = $indexes->find($indexName);
+                    if($index instanceof Index) {
+                        $configuration = $index->getConfiguration();
+                        if(!empty($configuration['filter_objects']) && is_array($configuration['filter_objects'])) {
+                            foreach($configuration['filter_objects'] as $filterClassName => $filterConfiguration) {
+                                $identifier = md5(serialize([$filterClassName => $filterConfiguration]));
+                                if(empty($result[$identifier]) && ($filter = $filterManager->getFilter($filterClassName)) !== null) {
+                                    $filter->setConfiguration($filterConfiguration);
+                                    $result[$identifier] = $filter;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        $params = [&$result];
+        $this->executeHook(PostProcessBaseFilterArrayHookInterface::class, $params);
+
+        return $result;
     }
 
     /**

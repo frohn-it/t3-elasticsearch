@@ -36,12 +36,10 @@
             "type": "keyword"
         },
         "starttime": {
-            "type": "integer",
-            "index": false
+            "type": "integer"
         },
         "endtime": {
-            "type": "integer",
-            "index": false
+            "type": "integer"
         },
         "categories": {
             "type": "keyword"
@@ -64,6 +62,14 @@
                     "field": "doktype"
                 }
             }
+        }
+    },
+    "filter_objects": {
+        "BeFlo\\T3Elasticsearch\\Filter\\Filter\\StarttimeFilter": {
+            "field": "starttime"
+        },
+        "BeFlo\\T3Elasticsearch\\Filter\\Filter\\EndtimeFilter": {
+            "field": "endtime"
         }
     }
 }
